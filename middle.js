@@ -168,3 +168,79 @@ app.get('/api/timestamp/:date_string?', function(req, res, next){
       res.json({"unix":null,"utc":"Invalid Date"});
 }  
 )
+//new improved working code 1.31.20 - 2:26pm
+
+app.get("/api/hello", function(req, res) {
+  res.json({ greeting: "hello API" });
+});
+// still need to break up the first middleware function as it is triggering "Error: Can't set headers after they are sent"
+app.get('/api/timestamp/:date_string?', function(req, res, next){
+  // dateParameter variable added for readability...
+    var dateParameter = req.params.date_string;
+  // test whether request parameter is blank or a string ...
+  if (typeof dateParameter === 'string') {
+    // if not blank - test here whether entry is unix timestamp or ISO string using isoDatestringValidator.io. If ISO - display .json, if unix then next();
+      if (isoDatestringValidator.isValidDate(dateParameter)) {
+              res.json({unix: new Date(dateParameter).getTime(), utc: new Date(dateParameter).toUTCString()});
+          } next(); 
+        } else { res.json({ unix: Date.now(), utc: Date()}) // if blank - the current date .json is sent
+      } 
+     }, function(req, res) { 
+   // naming variables for readability...
+     var dateParameter = req.params.date_string;
+     var dateToInt= parseInt(dateParameter);
+  // added validate-timestamp.io to check unix timestamp
+        if (isTimestamp(dateToInt)){
+           res.json({unix: new Date(dateToInt).getTime(), utc: new Date(dateToInt).toUTCString()});
+        } else { res.json({unix: new Date(dateToInt).getTime(), utc: new Date(dateToInt).toUTCString()});
+               }   
+  
+    }//, function(req, res) {
+     /*var dateParameter = req.params.date_string;
+     var ISOToUnix3 = new Date(dateParameter).getTime();
+     var ISOToUTC3 = new Date(dateParameter).toUTCString(); 
+     res.json({unix: ISOToUnix3, utc: ISOToUTC3}); 
+      
+  }  */
+)
+// 1.31.20 coe with console messaging to trace errors
+*/
+app.get("/api/hello", function(req, res) {
+  res.json({ greeting: "hello API" });
+});
+// still need to break up the first middleware function as it is triggering "Error: Can't set headers after they are sent"
+app.get('/api/timestamp/:date_string?', function(req, res, next){
+  // dateParameter variable added for readability...
+    var dateParameter = req.params.date_string;
+  // test whether request parameter is blank or a string ...
+  if (typeof dateParameter === 'string') {
+    // if not blank - test here whether entry is unix timestamp or ISO string using isoDatestringValidator.io. If ISO - display .json, if unix then next();
+      if (isoDatestringValidator.isValidDate(dateParameter)) {
+              res.json({unix: new Date(dateParameter).getTime(), utc: new Date(dateParameter).toUTCString()});
+        console.log('passed ISO String Validation Test but triggering Error: Cant set headers after they are sent.')
+          } next(); 
+        } else { 
+          console.log('field was blank so current date is displayed')
+          res.json({ unix: Date.now(), utc: Date()}) // if blank - the current date .json is sent
+      } 
+     }, function(req, res) { 
+   // naming variables for readability...
+     var dateParameter = req.params.date_string;
+     var dateToInt= parseInt(dateParameter);
+  
+  // added validate-timestamp.io to check unix timestamp
+        if (isTimestamp(dateToInt)){
+           res.json({unix: new Date(dateToInt).getTime(), utc: new Date(dateToInt).toUTCString()});
+          console.log('verified legit unix timestamp')
+        } else { res.json({unix: new Date(dateToInt).getTime(), utc: new Date(dateToInt).toUTCString()});
+                console.log('recognized invalid ISO dateString or Unix Timestamp')
+               }   
+  
+    }//, function(req, res) {
+     /*var dateParameter = req.params.date_string;
+     var ISOToUnix3 = new Date(dateParameter).getTime();
+     var ISOToUTC3 = new Date(dateParameter).toUTCString(); 
+     res.json({unix: ISOToUnix3, utc: ISOToUTC3}); 
+      
+  }  */
+)
